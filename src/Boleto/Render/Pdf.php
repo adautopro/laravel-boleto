@@ -1,12 +1,12 @@
 <?php
 
-namespace Eduardokum\LaravelBoleto\Boleto\Render;
+namespace Adautopro\LaravelBoleto\Boleto\Render;
 
 use Illuminate\Support\Str;
-use Eduardokum\LaravelBoleto\Util;
-use Eduardokum\LaravelBoleto\Exception\ValidationException;
-use Eduardokum\LaravelBoleto\Contracts\Boleto\Boleto as BoletoContract;
-use Eduardokum\LaravelBoleto\Contracts\Boleto\Render\Pdf as PdfContract;
+use Adautopro\LaravelBoleto\Util;
+use Adautopro\LaravelBoleto\Exception\ValidationException;
+use Adautopro\LaravelBoleto\Contracts\Boleto\Boleto as BoletoContract;
+use Adautopro\LaravelBoleto\Contracts\Boleto\Render\Pdf as PdfContract;
 
 class Pdf extends AbstractPdf implements PdfContract
 {
@@ -35,17 +35,11 @@ class Pdf extends AbstractPdf implements PdfContract
     protected $showInstrucoes = true;
 
     protected $desc = 3; // tamanho célula descrição
-
     protected $cell = 4; // tamanho célula dado
-
     protected $fdes = 6; // tamanho fonte descrição
-
     protected $fcel = 8; // tamanho fonte célula
-
     protected $small = 0.2; // tamanho barra fina
-
     protected $totalBoletos = 0;
-
     protected $localizacao_pix = self::PIX_INSTRUCAO;
 
     public function __construct()
@@ -68,15 +62,12 @@ class Pdf extends AbstractPdf implements PdfContract
         if (! in_array($localizacao, [self::PIX_COD_BARRAS, self::PIX_INSTRUCAO])) {
             throw new ValidationException('Pix deve ser Pdf::PIX_COD_BARRAS ou Pdf::PIX_INSTRUCAO');
         }
-
         $this->localizacao_pix = $localizacao;
-
         return $this;
     }
 
     /**
      * @param int $i
-     *
      * @return Pdf
      */
     protected function instrucoes($i)
@@ -150,13 +141,11 @@ class Pdf extends AbstractPdf implements PdfContract
         $this->Cell(56);
         $this->Cell(0, $this->desc, $this->_($this->boleto[$i]->getBeneficiario()->getCepCidadeUf()), 0, 1);
         $this->Ln(8);
-
         return $this;
     }
 
     /**
      * @param int $i
-     *
      * @return Pdf
      */
     protected function Topo($i)
@@ -222,20 +211,16 @@ class Pdf extends AbstractPdf implements PdfContract
         $this->Ln(2);
 
         $pulaLinha = 26;
-
         $this->SetFont($this->PadraoFont, 'B', $this->fcel);
         if (count($this->boleto[$i]->getDescricaoDemonstrativo()) > 0) {
             $pulaLinha = $this->listaLinhas($this->boleto[$i]->getDescricaoDemonstrativo(), $pulaLinha);
         }
-
         $this->traco('Corte na linha pontilhada', $pulaLinha, 10);
-
         return $this;
     }
 
     /**
      * @param int $i
-     *
      * @return Pdf
      */
     protected function Bottom($i)
@@ -477,16 +462,14 @@ class Pdf extends AbstractPdf implements PdfContract
      *
      * @param array $boletos
      * @param bool $withGroup
-     *
      * @return Pdf
      * @throws ValidationException
      */
     public function addBoletos(array $boletos, $withGroup = true)
     {
-        if ($withGroup) {
+        if ($withGroup) 
             $this->StartPageGroup();
-        }
-
+        
         foreach ($boletos as $boleto) {
             $this->addBoleto($boleto);
         }
@@ -538,7 +521,6 @@ class Pdf extends AbstractPdf implements PdfContract
      *
      * @param string $dest tipo de destino const BOLETOPDF_DEST_STANDARD | BOLETOPDF_DEST_DOWNLOAD | BOLETOPDF_DEST_SAVE | BOLETOPDF_DEST_STRING
      * @param null $save_path
-     *
      * @return string
      * @throws ValidationException
      */
@@ -568,6 +550,639 @@ class Pdf extends AbstractPdf implements PdfContract
         }
 
         return $this->Output($nameFile . '.pdf', $dest);
+    }
+
+    /**
+     * @param integer $i
+     *
+     * @return $this
+     */
+    protected function capaCarne($i)
+    {
+
+        $this->Image('./img/logofesc.png', 15, ($this->GetY() +3), 26);
+        //dd(getcwd());
+        //$this->Image('./img/carimbo_fesc_carta.png', 160, ($this->GetY()+5 ), 30);
+        
+        $this->SetFont($this->PadraoFont, 'B', 30);
+        $this->Cell(35,20,'','LT');
+        $this->Cell(0, 20, 'FESC', 'TR', 0, 'L');
+        $this->SetFont($this->PadraoFont, 'B', 15);
+        $this->Ln();
+        $this->Cell(35,10,'','L');
+        $this->Cell(0, 10, $this->_($this->boleto[$i]->getBeneficiario()->getNome()), 'R', 0, 'L');
+        $this->ln();
+        $this->Cell(0, 18,'','LR');//abaix logo
+        $this->ln();
+        $this->SetFont('', 'B', 10);
+        $this->Cell(35,5,'','L');
+        $this->Cell(0, 5, $this->_($this->boleto[$i]->getPagador()->getNome()), 'R', 0, 'L');
+
+        $this->ln();
+        $this->SetFont('', '', 10);
+        $this->Cell(35,5,'','L');
+        $this->Cell(0, 5, $this->_(trim($this->boleto[$i]->getPagador()->getEndereco())), 'R', 0, 'L');
+        $this->ln();
+        $this->Cell(35,5,'','L');
+        $this->Cell(0, 5, $this->_($this->boleto[$i]->getPagador()->getBairro() .' - CEP '.$this->boleto[$i]->getPagador()->getCepCidadeUf()), 'R', 0, 'L');
+        $this->ln();
+        $this->Cell(0,17,'','LBR');
+        $this->ln(18);
+        $this->traco('', 5, 5);
+        
+        $this->ln();
+
+         $this->SetFont($this->PadraoFont, 'B', 14);
+        $this->Cell(25,25,'','LT');
+        $this->Cell(0, 25, utf8_decode('Informações gerais:'), 'TR', 0, 'L');
+        $this->SetFont($this->PadraoFont, '', 10);
+        $this->Ln();
+        $this->Cell(10,10,'','L');
+        $this->Cell(0, 10, utf8_decode('1 - Este carnê possui boletos referentes à Fundação Educacional São Carlos'), 'R', 0, 'L');
+        $this->ln(5);
+        $this->Cell(10,10,'','L');
+        $this->Cell(0, 10, utf8_decode('2 - O pagamento pode ser feito em qualquer banco, casa lotérica ou on-line mesmo após a data de vencimento.'), 'R', 0, 'L');
+        $this->ln(5);
+        $this->Cell(10,10,'','L');
+        $this->Cell(0, 10, utf8_decode('3 - Todos os boletos estão disponíveis no site www.fesc.com.br e via DDA (consulte seu banco).'), 'R', 0, 'L');
+        $this->ln(5);
+        $this->Cell(10,10,'','L');
+        $this->Cell(0, 10, utf8_decode('4 - Após o vencimento é cobrado o valor de 2% de multa e 1% ao mês.'), 'R', 0, 'L');
+        $this->ln(5);
+        $this->Cell(10,10,'','L');
+        $this->Cell(0, 10, utf8_decode('5 - Em caso de desistência, procure a secretaria escolar.'), 'R', 0, 'L');
+        $this->ln(10);
+         $this->SetFont($this->PadraoFont, 'B', 10);
+        $this->Cell(10,10,'','L');
+        $this->Cell(0, 10, utf8_decode('Mais informações podem ser obtidas através do 3362-0580 ou pelo fesc@fesc.com.br'), 'R', 0, 'L');
+        $this->ln(5);
+
+        $this->Cell(0, 14,'','LR');//abaix logo
+        $this->ln(14);
+
+        $this->Cell(0,5,'','LBR');
+        $this->ln(5);
+
+        $this->traco('', 5, 5);
+
+
+        $this->SetFont($this->PadraoFont, 'B', 30);
+        $this->Cell(35,25,'','LT');
+        $this->Cell(0, 25, '', 'TR', 0, 'L');
+        $this->SetFont($this->PadraoFont, 'B', 15);
+        $this->Ln();
+        $this->Cell(35,0,'','L');
+        $this->Cell(0, 0, '', 'R', 0, 'L');
+        $this->ln();
+        $this->Cell(0, 20,'','LR');//abaix logo
+        $this->ln();
+        $this->SetFont('', '', 8);
+        $this->Cell(25, 5, '', 'L');
+        $this->Cell(0,5,'','R');
+        
+        $this->ln();
+        $this->Cell(25,5,'','L');
+        $this->SetFont('', 'B', 10);
+        $this->Cell(0, 5, $this->_($this->boleto[$i]->getBeneficiario()->getNome()), 'R', 0, 'L');
+
+        $this->ln();
+
+        $this->SetFont('', '', 10);
+        $this->Cell(25,5,'','L');
+        $this->Cell(0, 4, $this->_(trim($this->boleto[$i]->getBeneficiario()->getEndereco() . ' - ' . $this->boleto[$i]->getBeneficiario()->getBairro()),' -'), 'R', 0, 'L');
+        $this->ln();
+        $this->Cell(25,5,'','L');
+        $this->Cell(0, 5, $this->_($this->boleto[$i]->getBeneficiario()->getCepCidadeUf()), 'R', 0, 'L');
+        $this->ln();
+        $this->Cell(0,16,'','LBR');
+        $this->ln(5);
+
+        
+    }
+
+   
+
+     /**
+     * @param integer $i
+     *
+     * @return $this
+     */
+    protected function boletoCarne($i)
+    {
+        $referencias = $this->boleto[$i]->getDescricaoDemonstrativo();
+        $this->Ln(2);
+        $this->SetFont($this->PadraoFont, '', $this->fdes);
+        $this->Image($this->boleto[$i]->getLogoBanco(), 10, ($this->GetY() - 2), 23);
+        $this->Cell(23, 4,'','B');//abaix logo
+        $this->SetFont('', 'B', 12);
+        $this->Cell(18, 4, $this->boleto[$i]->getCodigoBancoComDv(), 'LB', 0, '');
+        $this->Cell(4, 4);//espaço
+        $this->Cell(27, 4, '','LB');//logo
+        $this->Image($this->boleto[$i]->getLogoBanco(), 55, ($this->GetY() - 3), 27);
+        $this->Cell(13, 4, $this->boleto[$i]->getCodigoBancoComDv(), 'LBR', 0, 'L');
+        $this->SetFont('', 'B', 10);
+        $this->Cell(0, 4, $this->boleto[$i]->getLinhaDigitavel(), 'B', 1, 'R');
+       
+
+
+
+        $this->SetFont('', '', 6);
+        $this->Cell(18, 3, 'Parcela/Plano', 'LT', 0, 'L');
+        $this->Cell(23, 3, 'Vencimento', 'LTR', 0, 'L');
+        $this->Cell(4, 3);//espaço
+        $this->Cell(104, 3, 'Local de pagamento', 'LT', 0, 'L');
+        $this->Cell(0, 3, 'Vencimento', 'LTR', 0, 'L');
+        $this->ln();
+        $this->SetFont('', 'B', 7);
+        $this->Cell(18, 3, '', 'LB', 0, 'L');
+        $this->Cell(23, 3, $this->_($this->boleto[$i]->getDataVencimento()->format('d/m/Y')), 'LBR', 0, 'R');
+        $this->Cell(4, 2);//espaço
+        $this->Cell(104, 3, utf8_decode('Pagável em qualquer agência bancaria mesmo após vencimento.'), 'LB', 0, 'L');
+        $this->Cell(0, 3, $this->_($this->boleto[$i]->getDataVencimento()->format('d/m/Y')), 'LBR', 0, 'R');
+        $this->ln();
+
+        $this->SetFont('', '', 6);
+        $this->Cell(41, 3, utf8_decode('Ag/Cód. Beneficiário'), 'LR', 0, 'L');
+        $this->Cell(4, 3);//espaço
+        $this->Cell(104, 3, utf8_decode('Beneficiário'), 'L', 0, 'L');
+        $this->Cell(0, 3, utf8_decode('Ag/Cód. Beneficiário'), 'LR', 0, 'L');
+        $this->ln();
+        $this->SetFont('', 'B', 7);
+        $this->Cell(41, 3, $this->_($this->boleto[$i]->getAgenciaCodigoBeneficiario()), 'LBR', 0, 'R');
+        $this->Cell(4, 2);//espaço
+        $this->Cell(104, 3, $this->_($this->boleto[$i]->getBeneficiario()->getNome()), 'LB', 0, 'L');
+        $this->Cell(0, 3, $this->_($this->boleto[$i]->getAgenciaCodigoBeneficiario()), 'LBR', 0, 'R');
+        $this->ln();
+
+
+
+
+
+        $this->SetFont('', '', 6);
+        $this->Cell(41, 3, utf8_decode('Espécie'), 'LR', 0, 'L');
+        $this->Cell(4, 3);//espaço
+        $this->Cell(30, 3, utf8_decode('Data do documento'), 'L', 0, 'L');
+        $this->Cell(25, 3, utf8_decode('Nº documento'), 'L', 0, 'L');
+        $this->Cell(15, 3, utf8_decode('Espécie doc.'), 'L', 0, 'L');
+        $this->Cell(9, 3, utf8_decode('Aceite'), 'L', 0, 'L');
+        $this->Cell(25, 3, utf8_decode('Data processamento'), 'L', 0, 'L');
+        $this->Cell(0, 3, utf8_decode('Nosso número'), 'LR', 0, 'L');
+        $this->ln();
+
+        $this->SetFont('', 'B', 7);
+        $this->Cell(41, 3, 'R$', 'LBR', 0, 'L');
+        $this->Cell(4, 2);//espaço
+        $this->Cell(30, 3, $this->_($this->boleto[$i]->getDataDocumento()->format('d/m/Y')), 'LB', 0, 'L');
+        $this->Cell(25, 3, $this->_($this->boleto[$i]->getNumeroDocumento()), 'LB', 0, 'L');
+        $this->Cell(15, 3, $this->_($this->boleto[$i]->getEspecieDoc()), 'LB', 0, 'L');
+        $this->Cell(9, 3, $this->_($this->boleto[$i]->getAceite()), 'LBR', 0, 'R');
+        $this->Cell(25, 3, $this->_($this->boleto[$i]->getDataProcessamento()->format('d/m/Y')), 'LB', 0, 'L');
+        $this->Cell(0, 3, $this->_($this->boleto[$i]->getNossoNumeroBoleto()), 'LBR', 0, 'R');
+        $this->ln();
+
+
+        $this->SetFont('', '', 6);
+        $this->Cell(41, 3, utf8_decode('Quantidade'), 'LR', 0, 'L');
+        $this->Cell(4, 3);//espaço
+        $this->Cell(30, 3, utf8_decode('Uso do banco'), 'L', 0, 'L');
+        $this->Cell(15, 3, utf8_decode('Carteira'), 'L', 0, 'L');
+        $this->Cell(10, 3, utf8_decode('Espécie'), 'L', 0, 'L');
+        $this->Cell(24, 3, utf8_decode('Quantidade'), 'L', 0, 'L');
+        $this->Cell(25, 3, utf8_decode('Valor'), 'L', 0, 'L');
+        $this->Cell(0, 3, utf8_decode('(=) Valor do Documento'), 'LR', 0, 'L');
+        $this->ln();
+
+        $this->SetFont('', 'B', 7);
+        $this->Cell(41, 3, ' ', 'LBR', 0, 'L');
+        $this->Cell(4, 2);//espaço
+        $this->Cell(30, 3, ' ', 'LB', 0, 'L');
+        $this->Cell(15, 3, $this->_(strtoupper($this->boleto[$i]->getCarteiraNome())), 'LB', 0, 'L');
+        $this->Cell(10, 3, 'R$', 'LB', 0, 'L');
+        $this->Cell(24, 3, ' ', 'LB', 0, 'L');
+        $this->Cell(25, 3, ' ', 'LB', 0, 'L');
+        $this->Cell(0, 3, $this->_(Util::nReal($this->boleto[$i]->getValor())), 'LBR', 0, 'R');
+        $this->ln();
+
+
+
+        $this->SetFont('', '', 6);
+        $this->Cell(41, 3, utf8_decode('(=) Valor do Documento'), 'LR', 0, 'L');
+        $this->Cell(4, 3);//espaço
+        $this->Cell(104, 3, utf8_decode('Instruções de responsabilidade do beneficiário. Qualquer dúvida sobre este boleto, contate o beneficiário.'), 'L', 0, 'L');
+        $this->Cell(0, 3, utf8_decode('(-) Descontos / Abatimentos'), 'LR', 0, 'L');
+        $this->ln();
+
+        $this->SetFont('', 'B', 7);
+        $this->Cell(41, 3, $this->_(Util::nReal($this->boleto[$i]->getValor())), 'LBR', 0, 'R');
+        $this->Cell(4, 2);//espaço
+        $this->Cell(104, 3, utf8_decode($referencias[0]), 'L', 0, 'L');
+        $this->Cell(0, 3, ' ', 'LBR', 0, 'R');
+        $this->ln();
+
+
+        $this->SetFont('', '', 6);
+        $this->Cell(41, 3, utf8_decode('(-) Descontos / Abatimentos'), 'LR', 0, 'L');
+        $this->Cell(4, 3);//espaço
+        $this->SetFont('', 'B', 7);
+        $this->Cell(104, 3, utf8_decode($referencias[1]), 'L', 0, 'L');
+        $this->SetFont('', '', 6);
+        $this->Cell(0, 3, utf8_decode('(-) Outras deduções'), 'LR', 0, 'L');
+        $this->ln();
+
+        $this->SetFont('', 'B', 7);
+        $this->Cell(41, 3, ' ', 'LBR', 0, 'L');
+        $this->Cell(4, 2);//espaço
+        $this->Cell(104, 3, utf8_decode($referencias[2]), 'L', 0, 'L');
+        $this->Cell(0, 3, ' ', 'LBR', 0, 'R');
+        $this->ln();
+
+        $this->SetFont('', '', 6);
+        $this->Cell(41, 3, utf8_decode('(-) Outras deduções'), 'LR', 0, 'L');
+        $this->Cell(4, 3);//espaço
+        $this->SetFont('', 'B', 7);
+        $this->Cell(104, 3, utf8_decode($referencias[3]), 'L', 0, 'L');
+        $this->SetFont('', '', 6);
+        $this->Cell(0, 3, utf8_decode('(+) Mora / multa'), 'LR', 0, 'L');
+        $this->ln();
+
+        $this->SetFont('', 'B', 7);
+        $this->Cell(41, 3, ' ', 'LBR', 0, 'L');
+        $this->Cell(4, 2);//espaço
+        $this->Cell(104, 3, utf8_decode($referencias[4]), 'L', 0, 'L');
+        $this->Cell(0, 3, ' ', 'LBR', 0, 'R');
+        $this->ln();
+
+        $this->SetFont('', '', 6);
+        $this->Cell(41, 3, utf8_decode('(+) Mora / multa'), 'LR', 0, 'L');
+        $this->Cell(4, 3);//espaço
+        $this->SetFont('', 'B', 7);
+        $this->Cell(104, 3, '', 'L', 0, 'L');
+        $this->SetFont('', '', 6);
+        $this->Cell(0, 3, utf8_decode('(+) Outros acréscimos'), 'LR', 0, 'L');
+        $this->ln();
+
+        $this->SetFont('', 'B', 7);
+        $this->Cell(41, 3, ' ', 'LBR', 0, 'L');
+        $this->Cell(4, 2);//espaço
+    
+        $this->Cell(104, 3, utf8_decode(' '), 'L', 0, 'L');
+        $this->Cell(0, 3, ' ', 'LBR', 0, 'R');
+        $this->ln();
+
+
+        $this->SetFont('', '', 6);
+        $this->Cell(41, 3, utf8_decode('(+) Outros acréscimos'), 'LR', 0, 'L');
+        $this->Cell(4, 3);//espaço
+        $this->SetFont('', 'B', 7);
+        $this->Cell(104, 3, utf8_decode(''), 'L', 0, 'L');
+        $this->SetFont('', '', 6);
+        $this->Cell(0, 3, utf8_decode('(=) Valor cobrado'), 'LR', 0, 'L');
+        $this->ln();
+
+        $this->SetFont('', 'B', 7);
+        $this->Cell(41, 3, ' ', 'LBR', 0, 'L');
+        $this->Cell(4, 2);//espaço
+        $this->Cell(104, 3, utf8_decode('Sr. Caixa, cobrar multa de 2% após o vencimento e 1% ao mês de atraso.'), 'LB', 0, 'L');
+        $this->Cell(0, 3, ' ', 'LBR', 0, 'R');
+        $this->ln();
+
+
+        $this->SetFont('', '', 6);
+        $this->Cell(41, 3, utf8_decode('(=) Valor cobrado'), 'LR', 0, 'L');
+        $this->Cell(4, 3);//espaço
+        $this->Cell(0, 3, utf8_decode('Pagador'), 'LR', 0, 'L');
+        $this->ln();
+        $this->SetFont('', 'B', 7);
+        $this->Cell(41, 3, ' ', 'LBR', 0, 'L');
+        $this->Cell(4, 2);//espaço
+        $this->Cell(0, 3, $this->_($this->boleto[$i]->getPagador()->getNomeDocumento()), 'LR', 0, 'L');
+        $this->ln();
+
+        $this->SetFont('', '', 6);
+        $this->Cell(41, 3, utf8_decode('Nosso Número'), 'LR', 0, 'L');
+        $this->Cell(4, 3);//espaço
+        $this->SetFont('', 'B', 7);
+        $this->Cell(0, 3, $this->_(trim($this->boleto[$i]->getPagador()->getEndereco() . ' - ' . $this->boleto[$i]->getPagador()->getBairro()),' -'), 'LR', 0, 'L');
+        $this->ln();
+        $this->Cell(41, 3, $this->_($this->boleto[$i]->getNossoNumeroBoleto()), 'LBR', 0, 'R');
+        $this->Cell(4, 2);//espaço
+        $this->Cell(0, 3, $this->_($this->boleto[$i]->getPagador()->getCepCidadeUf()), 'LBR', 0, 'L');
+        $this->ln();
+        $this->SetFont('', '', 6);
+        $this->Cell(41, 3, utf8_decode('Nº documento'), 'LR', 0, 'L');
+        $this->Cell(4, 3);//espaço
+        $this->i25(55, $this->GetY() +3, $this->boleto[$i]->getCodigoBarras(), 0.7, 9);
+        $this->SetFont('', '', 6);
+        $this->Cell(40, 3, utf8_decode('Sacador / Avalista'), '', 0, 'L');
+        $this->SetFont('', 'B', 6);
+        $this->Cell(0, 3, utf8_decode('Autenticação mecânica - Ficha de compensação'), '', 0, 'R');
+        $this->ln();
+        $this->SetFont('', 'B', 7);
+        $this->Cell(41, 3, $this->_($this->boleto[$i]->getNumeroDocumento()), 'LBR', 0, 'R');
+        $this->Cell(4, 3);//espaço
+        $this->ln();
+        $this->SetFont('', '', 6);
+        $this->Cell(41, 3, utf8_decode('Pagador'), 'LR', 0, 'L');
+        $this->Cell(4, 3);//espaço
+        $this->ln();
+        $this->SetFont('', 'B', 7);
+        $this->Cell(41, 3, substr($this->_($this->boleto[$i]->getPagador()->getNome()),0,30), 'LBR', 0, 'R');
+        $this->Cell(4, 3);//espaço
+        $this->traco('', 5, 5);
+      
+        return $this;
+    }
+
+    /**
+     * @param integer $i
+     *
+     * @return $this
+     */
+    protected function boletoCarnePIX($i)
+    {
+        $referencias = $this->boleto[$i]->getDescricaoDemonstrativo();
+        $this->Ln(2);
+        $this->SetFont($this->PadraoFont, '', $this->fdes);
+        $this->Image($this->boleto[$i]->getLogoBanco(), 10, ($this->GetY() - 2), 23);
+        $this->Cell(23, 4,'','B');//abaix logo
+        $this->SetFont('', 'B', 12);
+        $this->Cell(18, 4, $this->boleto[$i]->getCodigoBancoComDv(), 'LB', 0, '');
+        $this->Cell(4, 4);//espaço
+        $this->Cell(27, 4, '','LB');//logo
+        $this->Image($this->boleto[$i]->getLogoBanco(), 55, ($this->GetY() - 3), 27);
+        $this->Cell(13, 4, $this->boleto[$i]->getCodigoBancoComDv(), 'LBR', 0, 'L');
+        $this->SetFont('', 'B', 10);
+        $this->Cell(0, 4, $this->boleto[$i]->getLinhaDigitavel(), 'B', 1, 'R');
+       
+
+
+
+        $this->SetFont('', '', 6);
+        $this->Cell(18, 3, 'Parcela/Plano', 'LT', 0, 'L');
+        $this->Cell(23, 3, 'Vencimento', 'LTR', 0, 'L');
+        $this->Cell(4, 3);//espaço
+        $this->Cell(104, 3, 'Local de pagamento', 'LT', 0, 'L');
+        $this->Cell(0, 3, 'Vencimento', 'LTR', 0, 'L');
+        $this->ln();
+        $this->SetFont('', 'B', 7);
+        $this->Cell(18, 3, '', 'LB', 0, 'L');
+        $this->Cell(23, 3, $this->_($this->boleto[$i]->getDataVencimento()->format('d/m/Y')), 'LBR', 0, 'R');
+        $this->Cell(4, 2);//espaço
+        $this->Cell(104, 3, utf8_decode('Pagável em qualquer agência bancaria mesmo após vencimento.'), 'LB', 0, 'L');
+        $this->Cell(0, 3, $this->_($this->boleto[$i]->getDataVencimento()->format('d/m/Y')), 'LBR', 0, 'R');
+        $this->ln();
+
+        $this->SetFont('', '', 6);
+        $this->Cell(41, 3, utf8_decode('Ag/Cód. Beneficiário'), 'LR', 0, 'L');
+        $this->Cell(4, 3);//espaço
+        $this->Cell(104, 3, utf8_decode('Beneficiário'), 'L', 0, 'L');
+        $this->Cell(0, 3, utf8_decode('Ag/Cód. Beneficiário'), 'LR', 0, 'L');
+        $this->ln();
+        $this->SetFont('', 'B', 7);
+        $this->Cell(41, 3, $this->_($this->boleto[$i]->getAgenciaCodigoBeneficiario()), 'LBR', 0, 'R');
+        $this->Cell(4, 2);//espaço
+        $this->Cell(104, 3, $this->_($this->boleto[$i]->getBeneficiario()->getNome()), 'LB', 0, 'L');
+        $this->Cell(0, 3, $this->_($this->boleto[$i]->getAgenciaCodigoBeneficiario()), 'LBR', 0, 'R');
+        $this->ln();
+
+
+
+
+
+        $this->SetFont('', '', 6);
+        $this->Cell(41, 3, utf8_decode('Espécie'), 'LR', 0, 'L');
+        $this->Cell(4, 3);//espaço
+        $this->Cell(30, 3, utf8_decode('Data do documento'), 'L', 0, 'L');
+        $this->Cell(25, 3, utf8_decode('Nº documento'), 'L', 0, 'L');
+        $this->Cell(15, 3, utf8_decode('Espécie doc.'), 'L', 0, 'L');
+        $this->Cell(9, 3, utf8_decode('Aceite'), 'L', 0, 'L');
+        $this->Cell(25, 3, utf8_decode('Data processamento'), 'L', 0, 'L');
+        $this->Cell(0, 3, utf8_decode('Nosso número'), 'LR', 0, 'L');
+        $this->ln();
+
+
+        $this->SetFont('', 'B', 7);
+        $this->Cell(41, 3, 'R$', 'LBR', 0, 'R');
+        $this->Cell(4, 2);//espaço
+        $this->Cell(30, 3, $this->_($this->boleto[$i]->getDataDocumento()->format('d/m/Y')), 'LB', 0, 'L');
+        $this->Cell(25, 3, $this->_($this->boleto[$i]->getNumeroDocumento()), 'LB', 0, 'L');
+        $this->Cell(15, 3, $this->_($this->boleto[$i]->getEspecieDoc()), 'LB', 0, 'L');
+        $this->Cell(9, 3, $this->_($this->boleto[$i]->getAceite()), 'LBR', 0, 'R');
+        $this->Cell(25, 3, $this->_($this->boleto[$i]->getDataProcessamento()->format('d/m/Y')), 'LB', 0, 'L');
+        $this->Cell(0, 3, $this->_($this->boleto[$i]->getNossoNumeroBoleto()), 'LBR', 0, 'R');
+        $this->ln();
+
+
+        $this->SetFont('', '', 6);
+        $this->Cell(41, 3, utf8_decode('Quantidade'), 'LR', 0, 'L');
+        $this->Cell(4, 3);//espaço
+        $this->Cell(30, 3, utf8_decode('Uso do banco'), 'L', 0, 'L');
+        $this->Cell(15, 3, utf8_decode('Carteira'), 'L', 0, 'L');
+        $this->Cell(10, 3, utf8_decode('Espécie'), 'L', 0, 'L');
+        $this->Cell(24, 3, utf8_decode('Quantidade'), 'L', 0, 'L');
+        $this->Cell(25, 3, utf8_decode('Valor'), 'L', 0, 'L');
+        $this->Cell(0, 3, utf8_decode('(=) Valor do Documento'), 'LR', 0, 'L');
+        $this->ln();
+
+        $this->SetFont('', 'B', 7);
+        $this->Cell(41, 3, ' ', 'LBR', 0, 'L');
+        $this->Cell(4, 2);//espaço
+        $this->Cell(30, 3, ' ', 'LB', 0, 'L');
+        $this->Cell(15, 3, $this->_(strtoupper($this->boleto[$i]->getCarteiraNome())), 'LB', 0, 'L');
+        $this->Cell(10, 3, 'R$', 'LB', 0, 'L');
+        $this->Cell(24, 3, ' ', 'LB', 0, 'L');
+        $this->Cell(25, 3, ' ', 'LB', 0, 'L');
+        $this->Cell(0, 3, $this->_(Util::nReal($this->boleto[$i]->getValor())), 'LBR', 0, 'R');
+        $this->ln();
+
+
+        $this->SetFont('', '', 6);
+        $this->Cell(41, 3, utf8_decode('(=) Valor do Documento'), 'LR', 0, 'L');
+        $this->Cell(4, 3);//espaço
+        $this->Cell(104, 3, utf8_decode('Instruções de responsabilidade do beneficiário. Qualquer dúvida sobre este boleto, contate o beneficiário.'), 'L', 0, 'L');
+        $this->Cell(0, 3, utf8_decode('Para pagamento via PIX:'), 'LR', 0, 'L');
+        $this->ln();
+
+        $this->SetFont('', 'B', 7);
+        $this->Cell(41, 3, $this->_(Util::nReal($this->boleto[$i]->getValor())), 'LBR', 0, 'R');
+        $this->Cell(4, 2);//espaço
+        $this->Cell(104, 3, utf8_decode($referencias[0]), 'L', 0, 'L');
+        $this->Image($this->boleto[$i]->getPixQrCodeBase64(), $this->GetX() +8, $this->GetY() +1, 25, 25, 'png');
+        $this->Cell(0, 3, ' ', 'LR', 0, 'R');
+        $this->ln();
+
+
+        $this->SetFont('', '', 6);
+        $this->Cell(41, 3, utf8_decode('(-) Descontos / Abatimentos'), 'LR', 0, 'L');
+        $this->Cell(4, 3);//espaço
+        $this->SetFont('', 'B', 7);
+        $this->Cell(104, 3, utf8_decode($referencias[1]), 'L', 0, 'L');
+        $this->SetFont('', '', 6);
+        $this->Cell(0, 3, '', 'LR', 0, 'L');//QRCODE
+        $this->ln();
+
+        $this->SetFont('', 'B', 7);
+        $this->Cell(41, 3, ' ', 'LBR', 0, 'L');
+        $this->Cell(4, 2);//espaço
+        $this->Cell(104, 3, utf8_decode($referencias[2]), 'L', 0, 'L');
+        $this->Cell(0, 3, ' ', 'LR', 0, 'R');//QRCODE
+        $this->ln();
+
+        $this->SetFont('', '', 6);
+        $this->Cell(41, 3, utf8_decode('(-) Outras deduções'), 'LR', 0, 'L');
+        $this->Cell(4, 3);//espaço
+        $this->SetFont('', 'B', 7);
+        $this->Cell(104, 3, utf8_decode($referencias[3]), 'L', 0, 'L');
+        $this->SetFont('', '', 6);
+        $this->Cell(0, 3, '', 'LR', 0, 'L');//QRcode
+        $this->ln();
+
+        $this->SetFont('', 'B', 7);
+        $this->Cell(41, 3, ' ', 'LBR', 0, 'L');
+        $this->Cell(4, 2);//espaço
+        $this->Cell(104, 3, utf8_decode($referencias[4]), 'L', 0, 'L');
+        $this->Cell(0, 3, ' ', 'LR', 0, 'R');//QRcode
+        $this->ln();
+
+        $this->SetFont('', '', 6);
+        $this->Cell(41, 3, utf8_decode('(+) Mora / multa'), 'LR', 0, 'L');
+        $this->Cell(4, 3);//espaço
+        $this->SetFont('', 'B', 7);
+        $this->Cell(104, 3,  '', 'L', 0, 'L'); 
+        $this->Cell(0, 3, '', 'LR', 0, 'L');
+        $this->ln();
+
+        $this->SetFont('', 'B', 7);
+        $this->Cell(41, 3, ' ', 'LBR', 0, 'L');
+        $this->Cell(4, 2);//espaço
+    
+        $this->Cell(104, 3, utf8_decode(' '), 'L', 0, 'L');
+        $this->Cell(0, 3, ' ', 'LR', 0, 'R');//QRcode
+        $this->ln();
+
+
+        $this->SetFont('', '', 6);
+        $this->Cell(41, 3, utf8_decode('(+) Outros acréscimos'), 'LR', 0, 'L');
+        $this->Cell(4, 3);//espaço
+        $this->SetFont('', 'B', 7);
+        $this->Cell(104, 3, utf8_decode(''), 'L', 0, 'L');
+        $this->SetFont('', '', 6);
+        $this->Cell(0, 3, '', 'LR', 0, 'L');//qrcode
+        $this->ln();
+
+        $this->SetFont('', 'B', 7);
+        $this->Cell(41, 3, ' ', 'LBR', 0, 'L');
+        $this->Cell(4, 2);//espaço
+        $this->Cell(104, 3, utf8_decode('Sr. Caixa, cobrar multa de 2% após o vencimento e 1% ao mês de atraso.'), 'LB', 0, 'L');
+        $this->Cell(0, 3, ' ', 'LBR', 0, 'R');
+        $this->ln();
+
+
+        $this->SetFont('', '', 6);
+        $this->Cell(41, 3, utf8_decode('(=) Valor cobrado'), 'LR', 0, 'L');
+        $this->Cell(4, 3);//espaço
+        $this->Cell(0, 3, utf8_decode('Pagador'), 'LR', 0, 'L');
+        $this->ln();
+        $this->SetFont('', 'B', 7);
+        $this->Cell(41, 3, ' ', 'LBR', 0, 'L');
+        $this->Cell(4, 2);//espaço
+        $this->Cell(0, 3, $this->_($this->boleto[$i]->getPagador()->getNomeDocumento()), 'LR', 0, 'L');
+        $this->ln();
+
+        $this->SetFont('', '', 6);
+        $this->Cell(41, 3, utf8_decode('Nosso Número'), 'LR', 0, 'L');
+        $this->Cell(4, 3);//espaço
+        $this->SetFont('', 'B', 7);
+        $this->Cell(0, 3, $this->_(trim($this->boleto[$i]->getPagador()->getEndereco() . ' - ' . $this->boleto[$i]->getPagador()->getBairro()),' -'), 'LR', 0, 'L');
+        $this->ln();
+        $this->Cell(41, 3, $this->_($this->boleto[$i]->getNossoNumeroBoleto()), 'LBR', 0, 'R');
+        $this->Cell(4, 2);//espaço
+        $this->Cell(0, 3, $this->_($this->boleto[$i]->getPagador()->getCepCidadeUf()), 'LBR', 0, 'L');
+        $this->ln();
+        $this->SetFont('', '', 6);
+        $this->Cell(41, 3, utf8_decode('Nº documento'), 'LR', 0, 'L');
+        $this->Cell(4, 3);//espaço
+        $this->i25(55, $this->GetY() +2, $this->boleto[$i]->getCodigoBarras(), 0.7, 10);
+        $this->SetFont('', '', 6);
+        //$this->Cell(40, 3, utf8_decode('Sacador / Avalista'), '', 0, 'L');
+        $this->SetFont('', '', 6);
+        $this->Cell(0, 3);
+        $this->ln();
+        $this->SetFont('', 'B', 7);
+        $this->Cell(41, 3, $this->_($this->boleto[$i]->getNumeroDocumento()), 'LBR', 0, 'R');
+        $this->Cell(4, 3);//espaço
+        $this->ln();
+        $this->SetFont('', '', 6);
+        $this->Cell(41, 3, utf8_decode('Pagador'), 'LR', 0, 'L');
+        $this->Cell(100, 3);//espaço
+        $this->SetFont('', '', 8);
+        $this->Cell(4, 3, utf8_decode('Código de Barras'), '', 0, 'L');
+        $this->ln();
+        $this->SetFont('', 'B', 7);
+        $this->Cell(41, 3, substr($this->_($this->boleto[$i]->getPagador()->getNome()),0,30), 'LBR', 0, 'R');
+        $this->Cell(100, 3);//espaço
+        $this->SetFont('', '', 6);
+        $this->Cell(4, 3, utf8_decode('Autenticação mecânica - Ficha de compensação'), '', 0, 'L');
+        $this->traco('', 5, 5);
+      
+        return $this;
+    }
+
+
+
+    /**
+     * Função para gerar o carne
+     *
+     * @param string $dest tipo de destino const BOLETOPDF_DEST_STANDARD | BOLETOPDF_DEST_DOWNLOAD | BOLETOPDF_DEST_SAVE | BOLETOPDF_DEST_STRING
+     * @param null $save_path
+     * @param null $nameFile
+     *
+     * @return string
+     * @throws ValidationException
+     */
+    public function gerarCarne($dest = self::OUTPUT_STANDARD, $save_path = null, $nameFile = null)
+    {
+        if ($this->totalBoletos == 0) {
+            throw new \Exception('Nenhum Boleto adicionado');
+        }
+        $this->SetDrawColor('0', '0', '0');
+        $this->setMargins(10,10);
+
+        for ($i = 0; $i < $this->totalBoletos; $i++) {  
+            if($i>0 && $this->boleto[$i]->getPagador()->getNomeDocumento() === $this->boleto[$i-1]->getPagador()->getNomeDocumento()){
+                $this->boletoCarne($i);
+                $contador++;
+            }
+            else{
+                $this->AddPage();
+                $this->capaCarne($i);
+                $this->AddPage();
+                if($this->boleto[$i]->pixQrCode)
+                    $this->boletoCarnePIX($i);
+                else
+                    $this->boletoCarne($i);
+                $contador=1;
+
+            }
+
+            /*if(fmod($contador,3)==0 && $i>0) 
+                 $this->AddPage();*/
+            if($contador==3 && $i>0 && isset($this->boleto[$i+1]) && $this->boleto[$i]->getPagador()->getNomeDocumento() === $this->boleto[$i+1]->getPagador()->getNomeDocumento()){
+                $this->AddPage();
+                $contador=0;
+
+            }
+
+        }
+        if ($dest == self::OUTPUT_SAVE) {
+            $this->Output($save_path, $dest, $this->print);
+            return $save_path;
+        }
+        if ($nameFile == null) {
+            $nameFile = Str::random(32);
+        }
+        
+        return $this->Output($nameFile . '.pdf', $dest, $this->print);
     }
 
     /**

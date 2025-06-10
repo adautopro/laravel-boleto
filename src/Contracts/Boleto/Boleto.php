@@ -1,9 +1,9 @@
 <?php
 
-namespace Eduardokum\LaravelBoleto\Contracts\Boleto;
+namespace Adautopro\LaravelBoleto\Contracts\Boleto;
 
 use Carbon\Carbon;
-use Eduardokum\LaravelBoleto\Contracts\Pessoa as PessoaContract;
+use Adautopro\LaravelBoleto\Contracts\Pessoa as PessoaContract;
 
 interface Boleto
 {

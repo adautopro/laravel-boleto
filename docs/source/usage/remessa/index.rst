@@ -69,7 +69,7 @@ All banks have the same methods for file generation. What changes are the fields
 
 .. seealso::
 
-   `API send docs <https://eduardokum.github.io/laravel-boleto/namespace-Eduardokum.LaravelBoleto.Cnab.Remessa.html>`_
+   `API send docs <https://eduardokum.github.io/laravel-boleto/namespace-Adautopro.LaravelBoleto.Cnab.Remessa.html>`_
       Documentation for return objects.
 
    `Examples <https://github.com/eduardokum/laravel-boleto/tree/master/exemplos>`_

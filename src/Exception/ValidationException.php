@@ -1,6 +1,6 @@
 <?php
 
-namespace Eduardokum\LaravelBoleto\Exception;
+namespace Adautopro\LaravelBoleto\Exception;
 
 class ValidationException extends BaseException
 {

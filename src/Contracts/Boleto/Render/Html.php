@@ -1,6 +1,6 @@
 <?php
 
-namespace Eduardokum\LaravelBoleto\Contracts\Boleto\Render;
+namespace Adautopro\LaravelBoleto\Contracts\Boleto\Render;
 
 interface Html
 {

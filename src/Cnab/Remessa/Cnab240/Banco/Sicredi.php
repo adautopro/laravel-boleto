@@ -1,12 +1,12 @@
 <?php
 
-namespace Eduardokum\LaravelBoleto\Cnab\Remessa\Cnab240\Banco;
+namespace Adautopro\LaravelBoleto\Cnab\Remessa\Cnab240\Banco;
 
-use Eduardokum\LaravelBoleto\Util;
-use Eduardokum\LaravelBoleto\Exception\ValidationException;
-use Eduardokum\LaravelBoleto\Cnab\Remessa\Cnab240\AbstractRemessa;
-use Eduardokum\LaravelBoleto\Contracts\Boleto\Boleto as BoletoContract;
-use Eduardokum\LaravelBoleto\Contracts\Cnab\Remessa as RemessaContract;
+use Adautopro\LaravelBoleto\Util;
+use Adautopro\LaravelBoleto\Exception\ValidationException;
+use Adautopro\LaravelBoleto\Cnab\Remessa\Cnab240\AbstractRemessa;
+use Adautopro\LaravelBoleto\Contracts\Boleto\Boleto as BoletoContract;
+use Adautopro\LaravelBoleto\Contracts\Cnab\Remessa as RemessaContract;
 
 class Sicredi extends AbstractRemessa implements RemessaContract
 {

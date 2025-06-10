@@ -1,6 +1,6 @@
 <?php
 
-namespace Eduardokum\LaravelBoleto\Contracts\Cnab\Retorno\Cnab240;
+namespace Adautopro\LaravelBoleto\Contracts\Cnab\Retorno\Cnab240;
 
 interface HeaderLote
 {

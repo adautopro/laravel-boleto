@@ -1,6 +1,6 @@
 <?php
 
-namespace Eduardokum\LaravelBoleto\Contracts\Cnab;
+namespace Adautopro\LaravelBoleto\Contracts\Cnab;
 
 interface Cnab
 {

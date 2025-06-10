@@ -1,11 +1,11 @@
 <?php
 
-namespace Eduardokum\LaravelBoleto\Boleto\Banco;
+namespace Adautopro\LaravelBoleto\Boleto\Banco;
 
-use Eduardokum\LaravelBoleto\Boleto\AbstractBoleto;
-use Eduardokum\LaravelBoleto\Contracts\Boleto\Boleto as BoletoContract;
-use Eduardokum\LaravelBoleto\Exception\ValidationException;
-use Eduardokum\LaravelBoleto\Util;
+use Adautopro\LaravelBoleto\Boleto\AbstractBoleto;
+use Adautopro\LaravelBoleto\Contracts\Boleto\Boleto as BoletoContract;
+use Adautopro\LaravelBoleto\Exception\ValidationException;
+use Adautopro\LaravelBoleto\Util;
 
 class Ailos extends AbstractBoleto implements BoletoContract
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Eduardokum\LaravelBoleto\Boleto\Render;
+namespace Adautopro\LaravelBoleto\Boleto\Render;
 
 use FPDF;
 

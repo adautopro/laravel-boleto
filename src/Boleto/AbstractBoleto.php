@@ -1,6 +1,6 @@
 <?php
 
-namespace Eduardokum\LaravelBoleto\Boleto;
+namespace Adautopro\LaravelBoleto\Boleto;
 
 use Exception;
 use Throwable;
@@ -9,20 +9,20 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use chillerlan\QRCode\QRCode;
 use chillerlan\QRCode\QROptions;
-use Eduardokum\LaravelBoleto\Util;
+use Adautopro\LaravelBoleto\Util;
 use chillerlan\QRCode\Data\QRMatrix;
-use Eduardokum\LaravelBoleto\Pessoa;
-use Eduardokum\LaravelBoleto\MagicTrait;
-use Eduardokum\LaravelBoleto\NotaFiscal;
+use Adautopro\LaravelBoleto\Pessoa;
+use Adautopro\LaravelBoleto\MagicTrait;
+use Adautopro\LaravelBoleto\NotaFiscal;
 use chillerlan\QRCode\Output\QROutputInterface;
-use Eduardokum\LaravelBoleto\Boleto\Render\Pdf;
-use Eduardokum\LaravelBoleto\Boleto\Render\Html;
-use Eduardokum\LaravelBoleto\Boleto\Render\PdfCaixa;
-use Eduardokum\LaravelBoleto\Contracts\Boleto\Boleto;
-use Eduardokum\LaravelBoleto\Exception\ValidationException;
-use Eduardokum\LaravelBoleto\Contracts\Pessoa as PessoaContract;
-use Eduardokum\LaravelBoleto\Contracts\Boleto\Boleto as BoletoContract;
-use Eduardokum\LaravelBoleto\Contracts\NotaFiscal as NotaFiscalContract;
+use Adautopro\LaravelBoleto\Boleto\Render\Pdf;
+use Adautopro\LaravelBoleto\Boleto\Render\Html;
+use Adautopro\LaravelBoleto\Boleto\Render\PdfCaixa;
+use Adautopro\LaravelBoleto\Contracts\Boleto\Boleto;
+use Adautopro\LaravelBoleto\Exception\ValidationException;
+use Adautopro\LaravelBoleto\Contracts\Pessoa as PessoaContract;
+use Adautopro\LaravelBoleto\Contracts\Boleto\Boleto as BoletoContract;
+use Adautopro\LaravelBoleto\Contracts\NotaFiscal as NotaFiscalContract;
 
 /**
  * Class AbstractBoleto

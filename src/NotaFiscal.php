@@ -1,10 +1,10 @@
 <?php
 
-namespace Eduardokum\LaravelBoleto;
+namespace Adautopro\LaravelBoleto;
 
 use Carbon\Carbon;
-use Eduardokum\LaravelBoleto\Exception\ValidationException;
-use Eduardokum\LaravelBoleto\Contracts\NotaFiscal as NotaFiscalContract;
+use Adautopro\LaravelBoleto\Exception\ValidationException;
+use Adautopro\LaravelBoleto\Contracts\NotaFiscal as NotaFiscalContract;
 
 class NotaFiscal implements NotaFiscalContract
 {

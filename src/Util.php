@@ -1,6 +1,6 @@
 <?php
 
-namespace Eduardokum\LaravelBoleto;
+namespace Adautopro\LaravelBoleto;
 
 use Exception;
 use Carbon\Carbon;
@@ -8,9 +8,9 @@ use NumberFormatter;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Http\UploadedFile;
-use Eduardokum\LaravelBoleto\Boleto\AbstractBoleto;
-use Eduardokum\LaravelBoleto\Exception\ValidationException;
-use Eduardokum\LaravelBoleto\Contracts\Boleto\Boleto as BoletoContract;
+use Adautopro\LaravelBoleto\Boleto\AbstractBoleto;
+use Adautopro\LaravelBoleto\Exception\ValidationException;
+use Adautopro\LaravelBoleto\Contracts\Boleto\Boleto as BoletoContract;
 
 /**
  * Class Util
@@ -510,18 +510,15 @@ final class Util
 
         // Verifica se o tipo é 'x' minúsculo e então retorna a string em minúsculas
         if ($tipo === 'Z') {
-            return strtolower(sprintf("%$left$sFill$tamanho$type", mb_substr($valor, 0, $tamanho)));
+            return strtolower(sprintf("%{$left}{$sFill}{$tamanho}{$type}", mb_substr($valor, 0, $tamanho)));
         } else {
-            return sprintf("%$left$sFill$tamanho$type", mb_substr($valor, 0, $tamanho));
+            return sprintf("%{$left}{$sFill}{$tamanho}{$type}", mb_substr($valor, 0, $tamanho));
         }
     }
 
-    /**
-     * @param Carbon|string $date
-     * @param string $format
-     *
-     * @return int
-     */
+    /*
+  
+    
     public static function fatorVencimento($date, $format = 'Y-m-d')
     {
         $date = ($date instanceof Carbon) ? $date : Carbon::createFromFormat($format, $date)->setTime(0, 0, 0);
@@ -533,6 +530,21 @@ final class Util
 
         return $limit + 9000;
     }
+*/
+
+public static function fatorVencimento($date, $format = 'Y-m-d')
+{
+    $date = ($date instanceof Carbon) ? $date : Carbon::createFromFormat($format, $date)->setTime(0, 0, 0);
+    
+    $dataBaseAntiga = Carbon::create(1997, 10, 7); // Base antiga (07/10/1997)
+    $dataBaseNova = Carbon::create(2025, 2, 22);   // Nova base (22/02/2025)
+
+    if ($date->greaterThanOrEqualTo($dataBaseNova)) {
+        return $date->diffInDays($dataBaseNova) + 1000;
+    } else {
+        return $date->diffInDays($dataBaseAntiga);
+    }
+}
 
     /**
      * @param        $date
@@ -548,21 +560,28 @@ final class Util
         return $dateDiff . mb_substr($date->year, -1);
     }
 
-    /**
-     * @param        $factor
-     * @param string $format
-     *
-     * @return bool|string
-     */
+    /*
     public static function fatorVencimentoBack($factor, $format = 'Y-m-d')
     {
-        if ($factor <= 4000) {
-            $factor = $factor + 9000;
-        }
         $date = Carbon::create(1997, 10, 7, 0, 0, 0)->addDays((int) $factor);
 
         return $format ? $date->format($format) : $date;
+    }*/
+
+    public static function fatorVencimentoBack($factor, $format = 'Y-m-d')
+{
+    $dataBaseAntiga = Carbon::create(1997, 10, 7, 0, 0, 0); // Base antiga (07/10/1997)
+    $dataBaseNova = Carbon::create(2025, 2, 22, 0, 0, 0);   // Nova base (22/02/2025)
+
+    // Se o fator for 1000 ou maior, usar a nova base
+    if ($factor >= 1000) {
+        $date = $dataBaseNova->copy()->addDays($factor - 1000);
+    } else {
+        $date = $dataBaseAntiga->copy()->addDays($factor);
     }
+
+    return $format ? $date->format($format) : $date;
+}
 
     /**
      * @param     $n
@@ -842,16 +861,16 @@ final class Util
      * @param int $i
      * @param int $f
      * @param $value
-     * @param int $tamanhoLinha
+     *
      * @return array
      * @throws ValidationException
      */
-    public static function adiciona(&$line, $i, $f, $value, $tamanhoLinha = 400)
+    public static function adiciona(&$line, $i, $f, $value)
     {
         $i--;
 
-        if ($f > $tamanhoLinha) {
-            throw new ValidationException('$ini ou $fim ultrapassam o limite máximo de ' . $tamanhoLinha);
+        if (($i > 398 || $f > 400) && ($i != 401 && $f != 444)) {
+            throw new ValidationException('$ini ou $fim ultrapassam o limite máximo de 400');
         }
 
         if ($f < $i) {
@@ -899,7 +918,7 @@ final class Util
     /**
      * @param $file
      *
-     * @return array
+     * @return array|bool
      */
     public static function file2array($file)
     {
@@ -1073,20 +1092,16 @@ final class Util
             BoletoContract::COD_BANCO_BTG       => 'Banco\\Btg',
             BoletoContract::COD_BANCO_UNICRED   => 'Banco\\Unicred',
             BoletoContract::COD_BANCO_BRADESCO  => 'Banco\\Bradesco',
-            BoletoContract::COD_BANCO_ABC       => 'Banco\\Abc',
-            BoletoContract::COD_BANCO_GRAFENO   => 'Banco\\Grafeno',
             BoletoContract::COD_BANCO_FIBRA     => 'Banco\\Fibra',
             BoletoContract::COD_BANCO_ITAU      => 'Banco\\Itau',
             BoletoContract::COD_BANCO_HSBC      => 'Banco\\Hsbc',
             BoletoContract::COD_BANCO_DELCRED   => 'Banco\\Delbank',
             BoletoContract::COD_BANCO_PINE      => 'Banco\\Pine',
             BoletoContract::COD_BANCO_OURINVEST => 'Banco\\Ourinvest',
-            BoletoContract::COD_BANCO_BV        => 'Banco\\Bv',
             BoletoContract::COD_BANCO_SICREDI   => 'Banco\\Sicredi',
             BoletoContract::COD_BANCO_BANCOOB   => 'Banco\\Bancoob',
             BoletoContract::COD_BANCO_CRESOL    => 'Banco\\Cresol',
             BoletoContract::COD_BANCO_AILOS     => 'Banco\\Ailos',
-            BoletoContract::COD_BANCO_DAYCOVAL  => 'Banco\\Daycoval',
         ];
 
         if (array_key_exists($banco, $aBancos)) {
@@ -1105,35 +1120,13 @@ final class Util
      */
     public static function addPessoa(&$property, $obj)
     {
-        if (is_subclass_of($obj, "Eduardokum\LaravelBoleto\Contracts\Pessoa")) {
+        if (is_subclass_of($obj, 'Adautopro\\LaravelBoleto\\Contracts\\Pessoa')) {
             $property = $obj;
 
             return $obj;
         } elseif (is_array($obj)) {
             $obj = new Pessoa($obj);
             $property = $obj;
-
-            return $obj;
-        }
-        throw new ValidationException('Objeto inválido, somente Pessoa e Array');
-    }
-
-    /**
-     * @param $property
-     * @param $obj
-     *
-     * @return NotaFiscal
-     * @throws ValidationException
-     */
-    public static function addNotaFiscal(&$property, $obj)
-    {
-        if (is_subclass_of($obj, "Eduardokum\LaravelBoleto\Contracts\NotaFiscal")) {
-            $property[] = $obj;
-
-            return $obj;
-        } elseif (is_array($obj)) {
-            $obj = new NotaFiscal($obj);
-            $property[] = $obj;
 
             return $obj;
         }
@@ -1196,10 +1189,12 @@ final class Util
         }
         for ($s = 10, $n = 0, $i = 0; $s >= 2; $n += $c[$i++] * $s--);
         if ($c[9] != ((($n %= 11) < 2) ? 0 : 11 - $n)) {
+
             return false;
         }
         for ($s = 11, $n = 0, $i = 0; $s >= 2; $n += $c[$i++] * $s--);
         if ($c[10] != ((($n %= 11) < 2) ? 0 : 11 - $n)) {
+
             return false;
         }
 
@@ -1219,10 +1214,12 @@ final class Util
         }
         for ($i = 0, $n = 0; $i < 12; $n += $c[$i] * $b[++$i]);
         if ($c[12] != ((($n %= 11) < 2) ? 0 : 11 - $n)) {
+
             return false;
         }
         for ($i = 0, $n = 0; $i <= 12; $n += $c[$i] * $b[$i++]);
         if ($c[13] != ((($n %= 11) < 2) ? 0 : 11 - $n)) {
+
             return false;
         }
 
@@ -1323,7 +1320,7 @@ final class Util
             $payload .= $line('54', $valor);
         }
         $payload .= $line('58', 'BR');
-        $payload .= $line('59', Util::normalizeChars($beneficiario->getNome()));
+        $payload .= $line('59', Util::normalizeChars(substr($beneficiario->getNome(), 0, 25)));
         $payload .= $line('60', Util::normalizeChars($beneficiario->getCidade()));
         $payload .= $line('62', $txId);
 

@@ -1,13 +1,13 @@
 <?php
 
-namespace Eduardokum\LaravelBoleto\Boleto\Banco;
+namespace Adautopro\LaravelBoleto\Boleto\Banco;
 
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
-use Eduardokum\LaravelBoleto\Util;
-use Eduardokum\LaravelBoleto\CalculoDV;
-use Eduardokum\LaravelBoleto\Boleto\AbstractBoleto;
-use Eduardokum\LaravelBoleto\Contracts\Boleto\BoletoAPI as BoletoContract;
+use Adautopro\LaravelBoleto\Util;
+use Adautopro\LaravelBoleto\CalculoDV;
+use Adautopro\LaravelBoleto\Boleto\AbstractBoleto;
+use Adautopro\LaravelBoleto\Contracts\Boleto\BoletoAPI as BoletoContract;
 
 class Unicred extends AbstractBoleto implements BoletoContract
 {

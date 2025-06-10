@@ -1,15 +1,15 @@
 <?php
 
-namespace Eduardokum\LaravelBoleto\Cnab\Remessa;
+namespace Adautopro\LaravelBoleto\Cnab\Remessa;
 
 use Carbon\Carbon;
 use Illuminate\Support\Str;
-use Eduardokum\LaravelBoleto\Util;
+use Adautopro\LaravelBoleto\Util;
 use Illuminate\Support\Collection;
-use Eduardokum\LaravelBoleto\Pessoa;
-use Eduardokum\LaravelBoleto\Exception\ValidationException;
-use Eduardokum\LaravelBoleto\Contracts\Pessoa as PessoaContract;
-use Eduardokum\LaravelBoleto\Contracts\Boleto\Boleto as BoletoContract;
+use Adautopro\LaravelBoleto\Pessoa;
+use Adautopro\LaravelBoleto\Exception\ValidationException;
+use Adautopro\LaravelBoleto\Contracts\Pessoa as PessoaContract;
+use Adautopro\LaravelBoleto\Contracts\Boleto\Boleto as BoletoContract;
 
 abstract class AbstractRemessa
 {

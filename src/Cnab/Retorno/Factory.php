@@ -1,9 +1,9 @@
 <?php
 
-namespace Eduardokum\LaravelBoleto\Cnab\Retorno;
+namespace Adautopro\LaravelBoleto\Cnab\Retorno;
 
-use Eduardokum\LaravelBoleto\Util;
-use Eduardokum\LaravelBoleto\Exception\ValidationException;
+use Adautopro\LaravelBoleto\Util;
+use Adautopro\LaravelBoleto\Exception\ValidationException;
 
 class Factory
 {

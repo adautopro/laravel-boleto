@@ -1,13 +1,13 @@
 <?php
 
-namespace Eduardokum\LaravelBoleto\Boleto\Render;
+namespace Adautopro\LaravelBoleto\Boleto\Render;
 
-use Eduardokum\LaravelBoleto\Blade;
+use Adautopro\LaravelBoleto\Blade;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\View\Factory;
-use Eduardokum\LaravelBoleto\Exception\ValidationException;
-use Eduardokum\LaravelBoleto\Contracts\Boleto\Boleto as BoletoContract;
-use Eduardokum\LaravelBoleto\Contracts\Boleto\Render\Html as HtmlContract;
+use Adautopro\LaravelBoleto\Exception\ValidationException;
+use Adautopro\LaravelBoleto\Contracts\Boleto\Boleto as BoletoContract;
+use Adautopro\LaravelBoleto\Contracts\Boleto\Render\Html as HtmlContract;
 
 class Html implements HtmlContract
 {

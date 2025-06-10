@@ -2,7 +2,7 @@
 
 require 'autoload.php';
 
-$beneficiario = new Eduardokum\LaravelBoleto\Pessoa([
+$beneficiario = new Adautopro\LaravelBoleto\Pessoa([
     'nome'      => 'FUNDO DELCRED MULTISSETORIAL',
     'endereco'  => 'AV. RIO BRANCO, 186',
     'cep'       => '49010-030',
@@ -11,7 +11,7 @@ $beneficiario = new Eduardokum\LaravelBoleto\Pessoa([
     'documento' => '32.853.772/0001-62',
 ]);
 
-$pagador = new Eduardokum\LaravelBoleto\Pessoa([
+$pagador = new Adautopro\LaravelBoleto\Pessoa([
     'nome'      => 'PABLO KAWAN SANTOS TRINDADE',
     'endereco'  => 'AV. RIO BRANCO, 186',
     'bairro'    => 'CENTRO',
@@ -21,7 +21,7 @@ $pagador = new Eduardokum\LaravelBoleto\Pessoa([
     'documento' => '000.000.000-00',
 ]);
 
-$boleto = new Eduardokum\LaravelBoleto\Boleto\Banco\Delbank([
+$boleto = new Adautopro\LaravelBoleto\Boleto\Banco\Delbank([
     'logo'                => realpath(__DIR__ . '/../logos/') . DIRECTORY_SEPARATOR . '435.png',
     'dataVencimento'      => new Carbon\Carbon(),
     'dataDocumento'       => new Carbon\Carbon('2022-05-23'),
@@ -41,7 +41,7 @@ $boleto = new Eduardokum\LaravelBoleto\Boleto\Banco\Delbank([
     'especieDoc'          => 'DM',
 ]);
 
-$remessa = new Eduardokum\LaravelBoleto\Cnab\Remessa\Cnab400\Banco\Delbank([
+$remessa = new Adautopro\LaravelBoleto\Cnab\Remessa\Cnab400\Banco\Delbank([
     'idRemessa'     => 1,
     'agencia'       => 19,
     'carteira'      => '112',

@@ -1,7 +1,7 @@
 <?php
 
 require 'autoload.php';
-$beneficiario = new Eduardokum\LaravelBoleto\Pessoa([
+$beneficiario = new Adautopro\LaravelBoleto\Pessoa([
     'nome'      => 'ACME',
     'endereco'  => 'Rua um, 123',
     'cep'       => '99999-999',
@@ -10,7 +10,7 @@ $beneficiario = new Eduardokum\LaravelBoleto\Pessoa([
     'documento' => '99.999.999/9999-99',
 ]);
 
-$pagador = new Eduardokum\LaravelBoleto\Pessoa([
+$pagador = new Adautopro\LaravelBoleto\Pessoa([
     'nome'      => 'Cliente',
     'endereco'  => 'Rua um, 123',
     'bairro'    => 'Bairro',
@@ -20,7 +20,7 @@ $pagador = new Eduardokum\LaravelBoleto\Pessoa([
     'documento' => '999.999.999-99',
 ]);
 
-$boleto = new Eduardokum\LaravelBoleto\Boleto\Banco\Bb([
+$boleto = new Adautopro\LaravelBoleto\Boleto\Banco\Bb([
     'logo'                   => realpath(__DIR__ . '/../logos/') . DIRECTORY_SEPARATOR . '001.png',
     'dataVencimento'         => new Carbon\Carbon(),
     'valor'                  => 100,
@@ -38,7 +38,7 @@ $boleto = new Eduardokum\LaravelBoleto\Boleto\Banco\Bb([
     'especieDoc'             => 'DM',
 ]);
 
-$remessa = new Eduardokum\LaravelBoleto\Cnab\Remessa\Cnab400\Banco\Bb([
+$remessa = new Adautopro\LaravelBoleto\Cnab\Remessa\Cnab400\Banco\Bb([
     'agencia'      => 1111,
     'carteira'     => 11,
     'conta'        => 999999999,

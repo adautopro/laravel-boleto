@@ -1,14 +1,14 @@
 <?php
 
-namespace Eduardokum\LaravelBoleto\Tests\Boleto;
+namespace Adautopro\LaravelBoleto\Tests\Boleto;
 
 use Exception;
-use Eduardokum\LaravelBoleto\Util;
-use Eduardokum\LaravelBoleto\Pessoa;
+use Adautopro\LaravelBoleto\Util;
+use Adautopro\LaravelBoleto\Pessoa;
 use PHPUnit\Framework\Constraint\IsType;
-use Eduardokum\LaravelBoleto\Tests\TestCase;
-use Eduardokum\LaravelBoleto\Boleto\Render\Pdf;
-use Eduardokum\LaravelBoleto\Boleto\Banco as Boleto;
+use Adautopro\LaravelBoleto\Tests\TestCase;
+use Adautopro\LaravelBoleto\Boleto\Render\Pdf;
+use Adautopro\LaravelBoleto\Boleto\Banco as Boleto;
 
 class BoletoTest extends TestCase
 {

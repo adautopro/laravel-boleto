@@ -1,8 +1,8 @@
 <?php
 
-namespace Eduardokum\LaravelBoleto\Api\Exception;
+namespace Adautopro\LaravelBoleto\Api\Exception;
 
-use Eduardokum\LaravelBoleto\Exception\BaseException;
+use Adautopro\LaravelBoleto\Exception\BaseException;
 
 class MissingDataException extends BaseException
 {

@@ -3,15 +3,15 @@
 namespace Retorno;
 
 use Illuminate\Support\Collection;
-use Eduardokum\LaravelBoleto\Tests\TestCase;
-use Eduardokum\LaravelBoleto\Cnab\Retorno\Cnab240\Detalhe;
-use Eduardokum\LaravelBoleto\Exception\ValidationException;
+use Adautopro\LaravelBoleto\Tests\TestCase;
+use Adautopro\LaravelBoleto\Cnab\Retorno\Cnab240\Detalhe;
+use Adautopro\LaravelBoleto\Exception\ValidationException;
 
 class RetornoCnab240Test extends TestCase
 {
     public function testRetornoSantanderCnab240()
     {
-        $retorno = \Eduardokum\LaravelBoleto\Cnab\Retorno\Factory::make(__DIR__ . '/files/cnab240/santander.ret');
+        $retorno = \Adautopro\LaravelBoleto\Cnab\Retorno\Factory::make(__DIR__ . '/files/cnab240/santander.ret');
         $retorno->processar();
 
         $this->assertNotNull($retorno->getHeader());
@@ -36,7 +36,7 @@ class RetornoCnab240Test extends TestCase
     public function testRetornoSemDetalheCnab240()
     {
         $this->expectException(ValidationException::class);
-        $retorno = \Eduardokum\LaravelBoleto\Cnab\Retorno\Factory::make(__DIR__ . '/files/cnab240/retorno_sem_detalhe.ret');
+        $retorno = \Adautopro\LaravelBoleto\Cnab\Retorno\Factory::make(__DIR__ . '/files/cnab240/retorno_sem_detalhe.ret');
         $retorno->processar();
     }
 }

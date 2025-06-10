@@ -1,11 +1,11 @@
 <?php
 
-namespace Eduardokum\LaravelBoleto\Boleto\Banco;
+namespace Adautopro\LaravelBoleto\Boleto\Banco;
 
-use Eduardokum\LaravelBoleto\Util;
-use Eduardokum\LaravelBoleto\CalculoDV;
-use Eduardokum\LaravelBoleto\Boleto\AbstractBoleto;
-use Eduardokum\LaravelBoleto\Contracts\Boleto\Boleto as BoletoContract;
+use Adautopro\LaravelBoleto\Util;
+use Adautopro\LaravelBoleto\CalculoDV;
+use Adautopro\LaravelBoleto\Boleto\AbstractBoleto;
+use Adautopro\LaravelBoleto\Contracts\Boleto\Boleto as BoletoContract;
 
 class Btg extends AbstractBoleto implements BoletoContract
 {

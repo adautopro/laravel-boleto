@@ -1,8 +1,8 @@
 <?php
 
-namespace Eduardokum\LaravelBoleto\Contracts\Api;
+namespace Adautopro\LaravelBoleto\Contracts\Api;
 
-use Eduardokum\LaravelBoleto\Contracts\Boleto\BoletoAPI;
+use Adautopro\LaravelBoleto\Contracts\Boleto\BoletoAPI;
 
 interface Api
 {

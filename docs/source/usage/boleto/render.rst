@@ -39,7 +39,7 @@ Render multiple
 
 .. code-block:: php
 
-    $pdf = new Eduardokum\LaravelBoleto\Boleto\Render\Pdf();
+    $pdf = new Adautopro\LaravelBoleto\Boleto\Render\Pdf();
 
     // Add as many bills as you want.
     $pdf->addBoleto($boleto);
@@ -98,7 +98,7 @@ Render multiple
 
 .. code-block:: php
 
-    $html = new Eduardokum\LaravelBoleto\Boleto\Render\Html();
+    $html = new Adautopro\LaravelBoleto\Boleto\Render\Html();
 
     // Add as many bills as you want
     $html->addBoleto($boleto);

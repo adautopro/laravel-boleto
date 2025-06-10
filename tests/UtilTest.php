@@ -1,11 +1,11 @@
 <?php
 
-namespace Eduardokum\LaravelBoleto\Tests;
+namespace Adautopro\LaravelBoleto\Tests;
 
-use Eduardokum\LaravelBoleto\Boleto\AbstractBoleto;
-use Eduardokum\LaravelBoleto\Pessoa;
+use Adautopro\LaravelBoleto\Boleto\AbstractBoleto;
+use Adautopro\LaravelBoleto\Pessoa;
 use Exception;
-use Eduardokum\LaravelBoleto\Util;
+use Adautopro\LaravelBoleto\Util;
 use Illuminate\Support\Arr;
 
 class UtilTest extends TestCase

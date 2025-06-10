@@ -1,6 +1,6 @@
 <?php
 
-namespace Eduardokum\LaravelBoleto;
+namespace Adautopro\LaravelBoleto;
 
 class CalculoDV
 {

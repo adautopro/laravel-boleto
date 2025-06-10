@@ -1,7 +1,7 @@
 <?php
 
 require 'autoload.php';
-$beneficiario = new Eduardokum\LaravelBoleto\Pessoa([
+$beneficiario = new Adautopro\LaravelBoleto\Pessoa([
     'nome'      => 'ACME',
     'endereco'  => 'Rua um, 123',
     'bairro'    => 'Bairro',
@@ -11,7 +11,7 @@ $beneficiario = new Eduardokum\LaravelBoleto\Pessoa([
     'documento' => '99.999.999/9999-99',
 ]);
 
-$pagador = new Eduardokum\LaravelBoleto\Pessoa([
+$pagador = new Adautopro\LaravelBoleto\Pessoa([
     'nome'      => 'Cliente',
     'endereco'  => 'Rua um, 123',
     'bairro'    => 'Bairro',
@@ -21,7 +21,7 @@ $pagador = new Eduardokum\LaravelBoleto\Pessoa([
     'documento' => '999.999.999-99',
 ]);
 
-$boleto = new Eduardokum\LaravelBoleto\Boleto\Banco\Daycoval([
+$boleto = new Adautopro\LaravelBoleto\Boleto\Banco\Daycoval([
     'logo'                   => realpath(__DIR__ . '/../logos/') . DIRECTORY_SEPARATOR . '707.png',
     'dataVencimento'         => new Carbon\Carbon(),
     'valor'                  => 100,
@@ -40,11 +40,11 @@ $boleto = new Eduardokum\LaravelBoleto\Boleto\Banco\Daycoval([
     'agencia'                => '0001',
     'conta'                  => '7654321',
     'notas_fiscais'          => [
-        Eduardokum\LaravelBoleto\NotaFiscal::create('12345678901234567890123456789012345678901235', 2, new Carbon\Carbon(), 100),
+        Adautopro\LaravelBoleto\NotaFiscal::create('12345678901234567890123456789012345678901235', 2, new Carbon\Carbon(), 100),
     ],
 ]);
 
-$remessa = new Eduardokum\LaravelBoleto\Cnab\Remessa\Cnab400\Banco\Daycoval([
+$remessa = new Adautopro\LaravelBoleto\Cnab\Remessa\Cnab400\Banco\Daycoval([
     'agencia'       => 1111,
     'carteira'      => '3',
     'contaDv'       => 9,
