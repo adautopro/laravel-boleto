@@ -516,57 +516,60 @@ final class Util
         }
     }
 
-    /*
-  
-    
-    public static function fatorVencimento($date, $format = 'Y-m-d')
-    {
-        $date = ($date instanceof Carbon) ? $date : Carbon::createFromFormat($format, $date)->setTime(0, 0, 0);
-        $fator = (new Carbon('1997-10-07'))->diffInDays($date);
-        $limit = $fator % 9000;
-        if ($limit >= 1000) {
-            return $limit;
-        }
-
-        return $limit + 9000;
-    }
-*/
-
-public static function fatorVencimento($date, $format = 'Y-m-d')
-{
-    $date = ($date instanceof Carbon) ? $date : Carbon::createFromFormat($format, $date)->setTime(0, 0, 0);
-    
-    $dataBaseAntiga = Carbon::create(1997, 10, 7); // Base antiga (07/10/1997)
-    $dataBaseNova = Carbon::create(2025, 2, 22);   // Nova base (22/02/2025)
-
-    if ($date->greaterThanOrEqualTo($dataBaseNova)) {
-        return $date->diffInDays($dataBaseNova) + 1000;
-    } else {
-        return $date->diffInDays($dataBaseAntiga);
-    }
-}
 
     /**
-     * @param        $date
-     * @param string $format
+     * Calcula o fator de vencimento com base na data.
      *
-     * @return string
+     * @param string|\DateTime $date A data a ser processada. Pode ser uma string ou um objeto DateTime.
+     * @param string $format O formato da data de entrada, caso seja uma string.
+     * @return int O fator de vencimento calculado.
+     */
+    public static function fatorVencimento($date, $format = 'Y-m-d')
+    {
+        // Se a entrada não for um objeto DateTime, cria um a partir da string
+        if (!($date instanceof \DateTime)) {
+            $date = \DateTime::createFromFormat($format, $date);
+            if ($date === false) {
+                // Lidar com erro de formato, se necessário
+                throw new \InvalidArgumentException('Formato de data inválido.');
+            }
+            $date->setTime(0, 0, 0);
+        }
+
+        // Definindo as datas de base
+        $dataBaseAntiga = new \DateTime('1997-10-07 00:00:00'); // Base antiga (07/10/1997)
+        $dataBaseNova = new \DateTime('2025-02-22 00:00:00');    // Nova base (22/02/2025)
+
+        // Se a data for maior ou igual à nova base, calcula a diferença em dias com a nova base
+        if ($date >= $dataBaseNova) {
+            $interval = $date->diff($dataBaseNova);
+            return $interval->days + 1000;
+        } else {
+            // Caso contrário, calcula a diferença em dias com a base antiga
+            $interval = $date->diff($dataBaseAntiga);
+            return $interval->days;
+        }
+    }
+
+    /**
+     * @param mixed $date A data a ser processada. Pode ser uma string ou um objeto DateTime.
+     * @param string $format O formato da data, caso seja uma string.
+     *
+     * @return string O fator de vencimento no formato Juliano.
      */
     public static function dataJuliano($date, $format = 'Y-m-d')
     {
-        $date = ($date instanceof Carbon) ? $date : Carbon::createFromFormat($format, $date);
-        $dateDiff = $date->copy()->day(31)->month(12)->subYear()->diffInDays($date);
-
-        return $dateDiff . mb_substr($date->year, -1);
+        // Converte a entrada para um objeto DateTime se ainda não for
+        if (!($date instanceof \DateTime)) {
+            $date = \DateTime::createFromFormat($format, $date);
+            if ($date === false) {
+                // Lidar com erro de formato, se necessário
+                throw new \InvalidArgumentException('Formato de data inválido.');
+            }
+        }
     }
 
-    /*
-    public static function fatorVencimentoBack($factor, $format = 'Y-m-d')
-    {
-        $date = Carbon::create(1997, 10, 7, 0, 0, 0)->addDays((int) $factor);
 
-        return $format ? $date->format($format) : $date;
-    }*/
 
     public static function fatorVencimentoBack($factor, $format = 'Y-m-d')
 {
