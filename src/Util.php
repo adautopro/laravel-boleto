@@ -519,7 +519,11 @@ final class Util
 
     /**
      * Calcula o fator de vencimento com base na data.
+     * Calcula o fator de vencimento com base na data.
      *
+     * @param string|\DateTime $date A data a ser processada. Pode ser uma string ou um objeto DateTime.
+     * @param string $format O formato da data de entrada, caso seja uma string.
+     * @return int O fator de vencimento calculado.
      * @param string|\DateTime $date A data a ser processada. Pode ser uma string ou um objeto DateTime.
      * @param string $format O formato da data de entrada, caso seja uma string.
      * @return int O fator de vencimento calculado.
@@ -539,11 +543,28 @@ final class Util
         // Definindo as datas de base
         $dataBaseAntiga = new \DateTime('1997-10-07 00:00:00'); // Base antiga (07/10/1997)
         $dataBaseNova = new \DateTime('2025-02-22 00:00:00');    // Nova base (22/02/2025)
+        // Se a entrada não for um objeto DateTime, cria um a partir da string
+        if (!($date instanceof \DateTime)) {
+            $date = \DateTime::createFromFormat($format, $date);
+            if ($date === false) {
+                // Lidar com erro de formato, se necessário
+                throw new \InvalidArgumentException('Formato de data inválido.');
+            }
+            $date->setTime(0, 0, 0);
+        }
 
-        if ($date->greaterThanOrEqualTo($dataBaseNova)) {
-            return $date->diffInDays($dataBaseNova, true) + 1000;
+        // Definindo as datas de base
+        $dataBaseAntiga = new \DateTime('1997-10-07 00:00:00'); // Base antiga (07/10/1997)
+        $dataBaseNova = new \DateTime('2025-02-22 00:00:00');    // Nova base (22/02/2025)
+
+        // Se a data for maior ou igual à nova base, calcula a diferença em dias com a nova base
+        if ($date >= $dataBaseNova) {
+            $interval = $date->diff($dataBaseNova);
+            return $interval->days + 1000;
         } else {
-            return $date->diffInDays($dataBaseAntiga, true);
+            // Caso contrário, calcula a diferença em dias com a base antiga
+            $interval = $date->diff($dataBaseAntiga);
+            return $interval->days;
         }
     }
 
