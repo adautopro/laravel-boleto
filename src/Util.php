@@ -540,14 +540,10 @@ final class Util
         $dataBaseAntiga = new \DateTime('1997-10-07 00:00:00'); // Base antiga (07/10/1997)
         $dataBaseNova = new \DateTime('2025-02-22 00:00:00');    // Nova base (22/02/2025)
 
-        // Se a data for maior ou igual à nova base, calcula a diferença em dias com a nova base
-        if ($date >= $dataBaseNova) {
-            $interval = $date->diff($dataBaseNova);
-            return $interval->days + 1000;
+        if ($date->greaterThanOrEqualTo($dataBaseNova)) {
+            return $date->diffInDays($dataBaseNova, true) + 1000;
         } else {
-            // Caso contrário, calcula a diferença em dias com a base antiga
-            $interval = $date->diff($dataBaseAntiga);
-            return $interval->days;
+            return $date->diffInDays($dataBaseAntiga, true);
         }
     }
 
@@ -572,19 +568,19 @@ final class Util
 
 
     public static function fatorVencimentoBack($factor, $format = 'Y-m-d')
-{
-    $dataBaseAntiga = Carbon::create(1997, 10, 7, 0, 0, 0); // Base antiga (07/10/1997)
-    $dataBaseNova = Carbon::create(2025, 2, 22, 0, 0, 0);   // Nova base (22/02/2025)
+    {
+        $dataBaseAntiga = Carbon::create(1997, 10, 7, 0, 0, 0); // Base antiga (07/10/1997)
+        $dataBaseNova = Carbon::create(2025, 2, 22, 0, 0, 0);   // Nova base (22/02/2025)
 
-    // Se o fator for 1000 ou maior, usar a nova base
-    if ($factor >= 1000) {
-        $date = $dataBaseNova->copy()->addDays($factor - 1000);
-    } else {
-        $date = $dataBaseAntiga->copy()->addDays($factor);
-    }
+        // Se o fator for 1000 ou maior, usar a nova base
+        if ($factor >= 1000) {
+            $date = $dataBaseNova->copy()->addDays($factor - 1000);
+        } else {
+            $date = $dataBaseAntiga->copy()->addDays($factor);
+        }
 
     return $format ? $date->format($format) : $date;
-}
+    }
 
     /**
      * @param     $n
@@ -1065,6 +1061,7 @@ final class Util
      */
     public static function formatLinhaDigitavel($linhaDigitavel)
     {
+        //dd($linhaDigitavel);
         // Remover espaços em branco
         $linhaDigitavel = Util::onlyNumbers($linhaDigitavel);
 
