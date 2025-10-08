@@ -1150,7 +1150,10 @@ class Pdf extends AbstractPdf implements PdfContract
 
         for ($i = 0; $i < $this->totalBoletos; $i++) {  
             if($i>0 && $this->boleto[$i]->getPagador()->getNomeDocumento() === $this->boleto[$i-1]->getPagador()->getNomeDocumento()){
-                $this->boletoCarne($i);
+                if($this->boleto[$i]->pixQrCode)
+                    $this->boletoCarnePIX($i);
+                else
+                    $this->boletoCarne($i);
                 $contador++;
             }
             else{
