@@ -584,6 +584,29 @@ final class Util
                 throw new \InvalidArgumentException('Formato de data inválido.');
             }
         }
+
+        // Cria uma nova data para o final do ano anterior para cálculo
+        $endOfPreviousYear = clone $date;
+        $endOfPreviousYear->sub(new \DateInterval('P1Y'))->setDate($endOfPreviousYear->format('Y'), 12, 31);
+
+        // Calcula a diferença em dias entre a data e o final do ano anterior
+        $dateDiff = $endOfPreviousYear->diff($date)->days;
+
+        // Retorna a diferença de dias seguida pelo último dígito do ano
+        return $dateDiff . substr($date->format('Y'), -1);
+    }
+    
+   
+    public static function dataJulianoBack($date, $format = 'Y-m-d')
+    {
+        // Converte a entrada para um objeto DateTime se ainda não for
+        if (!($date instanceof \DateTime)) {
+            $date = \DateTime::createFromFormat($format, $date);
+            if ($date === false) {
+                // Lidar com erro de formato, se necessário
+                throw new \InvalidArgumentException('Formato de data inválido.');
+            }
+        }
     }
 
 
