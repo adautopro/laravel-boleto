@@ -901,6 +901,9 @@ class Pdf extends AbstractPdf implements PdfContract
     protected function boletoCarnePIX($i)
     {
         $referencias = $this->boleto[$i]->getDescricaoDemonstrativo();
+        $pixBase64 = $this->boleto[$i]->getPixQrCodeBase64();
+        $pixTemp = $this->base64ToTempFile($pixBase64);
+
         $this->Ln(2);
         $this->SetFont($this->PadraoFont, '', $this->fdes);
         $this->Image($this->boleto[$i]->getLogoBanco(), 10, ($this->GetY() - 2), 23);
@@ -1006,10 +1009,11 @@ class Pdf extends AbstractPdf implements PdfContract
         $this->SetFont('', 'B', 7);
         $this->Cell(41, 3, $this->_(Util::nReal($this->boleto[$i]->getValor())), 'LBR', 0, 'R');
         $this->Cell(4, 2);//espaço
-        $this->Cell(104, 3, utf8_decode($referencias[0]), 'L', 0, 'L');
-        $this->Image($this->boleto[$i]->getPixQrCodeBase64(), $this->GetX() +8, $this->GetY() +1, 25, 25, 'png');
+        $this->Cell(104, 3, utf8_decode($referencias[0]), 'L', 0, 'L');       
+        $this->Image($pixtemp, $this->GetX() +8, $this->GetY() +1, 25, 25, 'png');
         $this->Cell(0, 3, ' ', 'LR', 0, 'R');
         $this->ln();
+        @unlink($pixTemp);
 
 
         $this->SetFont('', '', 6);
@@ -1202,5 +1206,32 @@ class Pdf extends AbstractPdf implements PdfContract
         }
 
         return $pulaLinha;
+    }
+
+    /**
+     * Gerador do QRCODE em base64
+     */
+    function base64ToTempFile(string $base64): string
+    {
+        // Extrai tipo e conteúdo da imagem
+        if (preg_match('/^data:image\/(\w+);base64,/', $base64, $type)) {
+            $data = substr($base64, strpos($base64, ',') + 1);
+            $type = strtolower($type[1]);
+            $data = base64_decode($data);
+
+            if ($data === false) {
+                throw new Exception('Falha ao decodificar imagem base64');
+            }
+
+            // Caminho temporário — pode ser /tmp ou storage_path()
+            $tempFile = sys_get_temp_dir() . '/pix_' . uniqid() . '.' . $type;
+
+            // Salva no arquivo
+            file_put_contents($tempFile, $data);
+
+            return $tempFile;
+        }
+
+        throw new Exception('Base64 inválido');
     }
 }
