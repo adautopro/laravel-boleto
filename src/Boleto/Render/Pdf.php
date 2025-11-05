@@ -1010,7 +1010,7 @@ class Pdf extends AbstractPdf implements PdfContract
         $this->Cell(41, 3, $this->_(Util::nReal($this->boleto[$i]->getValor())), 'LBR', 0, 'R');
         $this->Cell(4, 2);//espaço
         $this->Cell(104, 3, utf8_decode($referencias[0]), 'L', 0, 'L');       
-        $this->Image($pixtemp, $this->GetX() +8, $this->GetY() +1, 25, 25, 'png');
+        $this->Image($pixTemp, $this->GetX() +8, $this->GetY() +1, 25, 25, 'png');
         $this->Cell(0, 3, ' ', 'LR', 0, 'R');
         $this->ln();
         @unlink($pixTemp);
